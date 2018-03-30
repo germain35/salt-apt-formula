@@ -16,9 +16,23 @@ apt_purge_repos:
 {%- for name, repo in apt.get('repo', {}).iteritems() %}
   {%- if repo.get('enabled', True) %}
 
+    {%- if repo.pin is defined %}
+apt_repo_{{ name }}_pin:
+  file.managed:
+    - name: {{ apt.preferences_dir | path_join(name) }}
+    - source: salt://apt/files/preferences_repo.jinja
+    - template: jinja
+    - defaults:
+        repo_name: {{ name }}
+    {%- else %}
+apt_repo_{{ name }}_pin:
+  file.absent:
+    - name: {{ apt.preferences_dir | path_join(name) }}
+    {%- endif %}
+
     {%- if repo.get('default', False) %}
       {%- do default_repos.update({name: repo}) %}
-      {%- if repo.get('key') %}
+      {%- if repo.get('key', False) %}
 
 apt_repo_{{ name }}_key:
   cmd.wait:
@@ -35,53 +49,39 @@ apt_repo_{{ name }}_key:
       - file: apt_default_repo_list
 
       {%- endif %}
-    {%- endif %}
-
-    {%- if repo.pin is defined %}
-apt_repo_{{ name }}_pin:
-  file.managed:
-    - name: {{ apt.preferences_dir | path_join(name) }}
-    - source: salt://apt/files/preferences_repo.jinja
-    - template: jinja
-    - defaults:
-        repo_name: {{ name }}
     {%- else %}
-apt_repo_{{ name }}_pin:
-  file.absent:
-    - name: {{ apt.preferences_dir | path_join(name) }}
-    {%- endif %}
 
 apt_repo_{{ name }}:
   pkgrepo.managed:
-    {%- if repo.ppa is defined %}
+      {%- if repo.ppa is defined %}
     - ppa: {{ repo.ppa }}
-    {%- else %}
+      {%- else %}
     - humanname: {{ name }}
     - name: {{ repo.source }}
-      {%- if repo.architectures is defined %}
+        {%- if repo.architectures is defined %}
     - architectures: {{ repo.architectures }}
-      {%- endif %}
+        {%- endif %}
     - file: {{ apt.sources_dir | path_join(name ~ '.list') }}
     - clean_file: {{ repo.clean|default(True) }}
-      {%- if repo.key_id is defined %}
+        {%- if repo.key_id is defined %}
     - keyid: {{ repo.key_id }}
-      {%- endif %}
-      {%- if repo.key_server is defined %}
+        {%- endif %}
+        {%- if repo.key_server is defined %}
     - keyserver: {{ repo.key_server }}
-      {%- endif %}
-      {%- if repo.key_url is defined %}
+        {%- endif %}
+        {%- if repo.key_url is defined %}
     - key_url: {{ repo.key_url }}
-      {%- endif %}
+        {%- endif %}
     - consolidate: {{ repo.get('consolidate', False) }}
     - clean_file: {{ repo.get('clean_file', False) }}
     - refresh_db: {{ repo.get('refresh_db', True) }}
     - require:
       - pkg: apt_pkgs
-      {%- if apt.purge_repos %}
+        {%- if apt.purge_repos %}
       - file: apt_purge_repos
+        {%- endif %}
       {%- endif %}
     {%- endif %}
-  
   {%- else %}
 
 apt_repo_{{ name }}:
