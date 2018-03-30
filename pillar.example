@@ -1,0 +1,18 @@
+apt:
+  repo:
+    stretch:
+      default: True
+      source: 'deb http://ftp.debian.org/debian stretch main contrib'
+    stretch-updates:
+      default: True
+      source: 'deb http://ftp.debian.org/debian stretch-updates main contrib'
+    stretch-security:
+      default: True
+      source: 'deb http://security.debian.org stretch/updates main contrib'
+    saltstack:
+      source: 'deb http://repo.saltstack.com/apt/debian/9/amd64/2017.7 stretch main'
+      key_url: https://repo.saltstack.com/apt/debian/9/amd64/2017.7/SALTSTACK-GPG-KEY.pub
+      pin:
+        - pin: 'origin "repo.saltstack.com"'
+          priority: 900
+          package: '*'

@@ -1,0 +1,8 @@
+{%- from "apt/map.jinja" import apt with context %}
+{%- set repo = apt.repo[repo_name] %}
+{%- for pin in repo.pin %}
+{%- set package = pin.get('package', '*') %}
+Package: {{ package }}
+Pin: {{ pin.pin }}
+Pin-Priority: {{ pin.priority }}
+{% endfor %}
