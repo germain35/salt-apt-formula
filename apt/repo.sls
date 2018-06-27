@@ -13,7 +13,7 @@ apt_purge_repos:
 {%- endif %}
 
 
-{%- for name, repo in apt.get('repo', {}).iteritems() %}
+{%- for name, repo in apt.get('repo', {}).items() %}
   {%- if repo.get('enabled', True) %}
 
     {%- if repo.pin is defined %}
