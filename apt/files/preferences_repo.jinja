@@ -1,8 +1,8 @@
 {%- from "apt/map.jinja" import apt with context %}
 {%- set repo = apt.repo[repo_name] %}
-{%- for preference in repo.preferences %}
+{%- for preference in repo.get('preferences', []) %}
 {%- set package = preference.get('package', '*') %}
 Package: {{ package }}
-Pin: {{ pin.pin }}
-Pin-Priority: {{ pin.priority }}
+Pin: {{ preference.pin }}
+Pin-Priority: {{ preference.priority }}
 {% endfor %}
