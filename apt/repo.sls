@@ -16,14 +16,16 @@ apt_purge_repos:
 {%- for name, repo in apt.get('repo', {}).items() %}
   {%- if repo.get('enabled', True) %}
 
-    {%- if repo.get('preferences', False) %}
-apt_repo_{{ name }}_preferences:
-  file.serialize:
+    {%- if repo.pin is defined %}
+apt_repo_{{ name }}_pin:
+  file.managed:
     - name: {{ apt.preferences_dir | path_join(name) }}
-    - formatter: yaml
-    - dataset: {{repo.preferences}}
+    - source: salt://apt/files/preferences_repo.jinja
+    - template: jinja
+    - defaults:
+        repo_name: {{ name }}
     {%- else %}
-apt_repo_{{ name }}_preferences:
+apt_repo_{{ name }}_pin:
   file.absent:
     - name: {{ apt.preferences_dir | path_join(name) }}
     {%- endif %}
@@ -127,4 +129,3 @@ apt_refresh_default_repo:
       - file: apt_default_repo_list
 
 {%- endif %}
-
