@@ -16,8 +16,8 @@ apt_purge_repos:
 {%- for name, repo in apt.get('repo', {}).items() %}
   {%- if repo.get('enabled', True) %}
 
-    {%- if repo.pin is defined %}
-apt_repo_{{ name }}_pin:
+    {%- if repo.preferences is defined %}
+apt_repo_{{ name }}_preferences:
   file.managed:
     - name: {{ apt.preferences_dir | path_join(name) }}
     - source: salt://apt/files/preferences_repo.jinja
@@ -25,7 +25,7 @@ apt_repo_{{ name }}_pin:
     - defaults:
         repo_name: {{ name }}
     {%- else %}
-apt_repo_{{ name }}_pin:
+apt_repo_{{ name }}_preferences:
   file.absent:
     - name: {{ apt.preferences_dir | path_join(name) }}
     {%- endif %}

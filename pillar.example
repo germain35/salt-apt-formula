@@ -12,7 +12,7 @@ apt:
     saltstack:
       source: 'deb http://repo.saltstack.com/apt/debian/9/amd64/2017.7 stretch main'
       key_url: https://repo.saltstack.com/apt/debian/9/amd64/2017.7/SALTSTACK-GPG-KEY.pub
-      pin:
+      preferences:
         - pin: 'origin "repo.saltstack.com"'
           priority: 900
           package: '*'
