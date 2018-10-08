@@ -124,7 +124,7 @@ apt_default_repo_list:
 
 apt_refresh_default_repo:
   module.wait:
-    - name: pkg.refresh_db
+    - pkg.refresh_db: {}
     - watch:
       - file: apt_default_repo_list
 
