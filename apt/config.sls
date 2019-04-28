@@ -2,20 +2,11 @@
 
 include:
   - apt.install
-{%- if apt.repo is defined %}
-  - apt.repo
-{%- endif %}
 
-{%- for key, config in apt.get('config', {}).items() %}
-
-apt_conf_{{ key }}:
+apt_conf:
   file.managed:
-    - name: {{apt.conf_dir | path_join('99' ~ key ~ '-salt')}}
+    - name: {{apt.conf_dir | path_join('99salt')}}
     - template: jinja
     - source: salt://apt/files/apt.conf.jinja
-    - defaults:
-        config: {{ config|yaml }}
     - require:
       - pkg: apt_pkgs
-
-{%- endfor %}

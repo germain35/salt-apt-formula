@@ -2,9 +2,6 @@
 
 include:
   - apt.install
-  {%- if apt.repo is defined %}
-  - apt.repo
-  {%- endif %}
-  {%- if apt.config is defined %}
   - apt.config
-  {%- endif %}
+  - apt.ssl
+  - apt.repo

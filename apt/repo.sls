@@ -2,10 +2,12 @@
 
 include:
   - apt.install
+  - apt.config
+  - apt.ssl
 
 {%- set default_repos = {} %}
 
-{%- if apt.purge_repos %}
+{%- if apt.get('purge_repos', False) %}
 apt_purge_repos:
    file.directory:
     - name: {{ apt.sources_dir }}
